@@ -1,13 +1,32 @@
-from sentence_transformers import SentenceTransformer
+import os
+from dotenv import load_dotenv
+from pinecone import Pinecone
 
-# Hugging Face sentence transformer model
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+# Load environment variables
+load_dotenv()
 
-model = SentenceTransformer(MODEL_NAME)
+# Initialize Pinecone client
+pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+
+# Pinecone hosted embedding model
+MODEL_NAME = "llama-text-embed-v2"
 
 
-def get_embedding(text: str):
+def get_embedding(text: str) -> list:
     """
-    Convert text into an embedding vector.
+    Generate embedding using Pinecone's hosted model.
     """
-    return model.encode(text).tolist()
+    try:
+        result = pc.inference.embed(
+            model=MODEL_NAME,
+            inputs=[text],
+            parameters={
+                "input_type": "passage"
+            }
+        )
+
+        return result.data[0].values
+
+    except Exception as e:
+        print(f"Embedding generation failed: {e}")
+        raise

@@ -16,8 +16,7 @@ def generate_answer(question: str, contexts):
         context_block = "\n\n".join(contexts)
 
     prompt = f"""Use the following context to answer the user's question.
-If the answer is not in the context, say you don't know.
-
+If the answer is not in the context, say you don't know. Donot use * in your answer. Do not make up an answer.
 Context:
 {context_block}
 
