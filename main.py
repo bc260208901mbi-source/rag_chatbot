@@ -8,6 +8,11 @@ from services.llm_service import generate_answer
 
 app = FastAPI(title="Simple RAG Chatbot")
 
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "RAG Chatbot API is running"}
+
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
